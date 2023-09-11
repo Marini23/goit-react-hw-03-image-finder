@@ -1,19 +1,27 @@
-import { GlobalStyle } from './GlibalStyle';
+import { Component } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { GlobalStyle } from './GlobalStyle';
+import { Searchbar } from './SearchBar/Searchbar';
 
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101',
-      }}
-    >
-      React homework template
-      <GlobalStyle />
-    </div>
-  );
-};
+export class App extends Component {
+  state = {
+    valueInput: ``,
+  };
+
+  componentDidMount() {}
+
+  handleFormSubmit = valueInput => {
+    this.setState({ valueInput });
+    console.log(valueInput);
+  };
+
+  render() {
+    return (
+      <div>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+        <GlobalStyle />
+        <Toaster position="top-right" />
+      </div>
+    );
+  }
+}
