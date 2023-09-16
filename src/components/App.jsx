@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { GlobalStyle } from './GlobalStyle';
 import { Searchbar } from './SearchBar/Searchbar';
-import { ImageCallery } from './ImageGallery/ImageGallery';
+import { ImageGallery } from './ImageGallery/ImageGallery';
 import { fetchImages } from './api';
 
 export class App extends Component {
@@ -19,18 +19,18 @@ export class App extends Component {
 
   handleFormSubmit = valueInput => {
     this.setState({ valueInput });
-    console.log(valueInput);
   };
 
   async componentDidUpdate(prevProps, prevState) {
     const { valueInput, page } = this.state;
 
     if (
-      prevState.valueInput !== this.statr.valueInput ||
+      prevState.valueInput !== this.state.valueInput ||
       prevState.page !== this.state.page
     ) {
       try {
-        const { hits, totalHits } = await fetchImages(valueInput, page);
+        const images = await fetchImages(valueInput, page);
+        this.setState({ images: images.data.hits });
       } catch {}
     }
   }
@@ -38,7 +38,7 @@ export class App extends Component {
     return (
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageCallery query={this.state.valueInput} />
+        <ImageGallery images={this.state.images} />
         <GlobalStyle />
         <Toaster position="top-right" />
       </div>
