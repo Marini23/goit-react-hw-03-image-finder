@@ -59,14 +59,18 @@ export class App extends Component {
   // };
   onOpenModal = (largeImageURL, alt) => {
     this.setState({ showModal: true, dataModal: { largeImageURL, alt } });
-    document.body.style.overflow = 'hidden';
+    // document.body.style.overflow = 'hidden';
   };
 
   onCloseModal = () => {
     this.setState({ showModal: false });
-
-    document.body.style.overflow = '';
   };
+
+  // handleKeyDown = e => {
+  //   if (e.code === `Escape`) {
+  //     this.onModalClose();
+  //   }
+  // };
 
   render() {
     return (
@@ -80,11 +84,9 @@ export class App extends Component {
         {this.state.images.length > 0 &&
           this.state.showBtnLoadMore &&
           !this.state.loading && <LoadMore onClick={this.onLoadMore} />}
-        <Modal
-          isOpen={this.isOpenModal}
-          isClose={this.onCloseModal}
-          dataModal={this.state.dataModal}
-        />
+        {this.state.showModal && (
+          <Modal isClose={this.onCloseModal} dataModal={this.state.dataModal} />
+        )}
         <GlobalStyle />
         <Toaster position="top-right" />
       </div>
