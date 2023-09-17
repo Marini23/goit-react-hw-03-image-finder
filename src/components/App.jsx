@@ -17,6 +17,7 @@ export class App extends Component {
     error: null,
     showBtnLoadMore: false,
     showModal: false,
+    dataModal: { largeImageURL: null, alt: null },
   };
 
   componentDidMount() {}
@@ -36,8 +37,8 @@ export class App extends Component {
         this.setState({ loading: true });
         const images = await fetchImages(valueInput, page);
         this.setState({
-          // images: [...prevState.images, ...images.data.hits],
-          images: images.data.hits,
+          images: [...prevState.images, ...images.data.hits],
+          // images: images.data.hits,
           showBtnLoadMore: true,
         });
       } catch {
@@ -53,8 +54,18 @@ export class App extends Component {
     }));
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  // toggleModal = () => {
+  //   this.setState(({ showModal }) => ({ showModal: !showModal }));
+  // };
+  onOpenModal = (largeImageURL, alt) => {
+    this.setState({ showModal: true, dataModal: { largeImageURL, alt } });
+    document.body.style.overflow = 'hidden';
+  };
+
+  onCloseModal = () => {
+    this.setState({ showModal: false });
+
+    document.body.style.overflow = '';
   };
 
   render() {
@@ -62,16 +73,18 @@ export class App extends Component {
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
         {this.state.loading && <Loader />}
-        <ImageGallery images={this.state.images} />
+        <ImageGallery
+          images={this.state.images}
+          onOpenModal={this.onOpenModal}
+        />
         {this.state.images.length > 0 &&
           this.state.showBtnLoadMore &&
           !this.state.loading && <LoadMore onClick={this.onLoadMore} />}
-        {this.state.showModal && (
-          <Modal
-            img={this.state.images.largeImageURL}
-            alt={this.state.images.tags}
-          />
-        )}
+        <Modal
+          isOpen={this.isOpenModal}
+          isClose={this.onCloseModal}
+          dataModal={this.state.dataModal}
+        />
         <GlobalStyle />
         <Toaster position="top-right" />
       </div>

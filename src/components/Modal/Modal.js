@@ -1,12 +1,12 @@
 import React from 'react';
-import { Modal, Overlay } from './Modal.styled';
+import { ModalImg, Overlay } from './Modal.styled';
 
-export const Modal = (img, alt) => {
+export const Modal = ({ isOpen, isClose, dataModal }) => {
   return (
     <Overlay>
-      <Modal>
-        <img src={img} alt={alt} />
-      </Modal>
+      <ModalImg>
+        <img src={dataModal.largeImageURL} alt={dataModal.alt} />
+      </ModalImg>
     </Overlay>
   );
 };
