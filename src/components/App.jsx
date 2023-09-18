@@ -13,6 +13,7 @@ export class App extends Component {
     query: ``,
     images: [],
     page: 1,
+    totalPages: 0,
     loading: false,
     error: false,
     showBtnLoadMore: false,
@@ -30,13 +31,15 @@ export class App extends Component {
       try {
         this.setState({ loading: true, error: false });
         const images = await fetchImages(query, page);
+        const totalPages = Math.ceil(images.data.totalHits / 12);
+        console.log(totalPages);
         this.setState({
           images:
             page === 1
               ? images.data.hits
               : [...prevState.images, ...images.data.hits],
-          // images: images.data.hits,
           showBtnLoadMore: true,
+          totalPages: totalPages,
         });
       } catch (error) {
         this.setState({ error: true });
@@ -69,8 +72,16 @@ export class App extends Component {
   };
 
   render() {
-    const { loading, error, images, showBtnLoadMore, showModal, dataModal } =
-      this.state;
+    const {
+      loading,
+      error,
+      images,
+      showBtnLoadMore,
+      showModal,
+      dataModal,
+      totalPages,
+      page,
+    } = this.state;
     return (
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
@@ -79,9 +90,10 @@ export class App extends Component {
         {images.length > 0 && (
           <ImageGallery images={images} onOpenModal={this.onOpenModal} />
         )}
-        {images.length > 0 && showBtnLoadMore && !loading && (
-          <LoadMore onClick={this.onLoadMore} />
-        )}
+        {images.length > 0 &&
+          showBtnLoadMore &&
+          !loading &&
+          page < totalPages && <LoadMore onClick={this.onLoadMore} />}
         {showModal && (
           <Modal isClose={this.onCloseModal} dataModal={dataModal} />
         )}
