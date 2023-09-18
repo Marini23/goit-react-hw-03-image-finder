@@ -10,43 +10,49 @@ import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
-    valueInput: ``,
+    query: ``,
     images: [],
     page: 1,
     loading: false,
-    error: null,
+    error: false,
     showBtnLoadMore: false,
     showModal: false,
-    dataModal: { largeImageURL: null, alt: null },
-  };
-
-  componentDidMount() {}
-
-  handleFormSubmit = valueInput => {
-    this.setState({ valueInput, images: [], page: 1 });
+    dataModal: { largeImageURL: null, tags: null },
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    const { valueInput, page } = this.state;
+    const { query, page } = this.state;
 
     if (
-      prevState.valueInput !== this.state.valueInput ||
+      prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
       try {
-        this.setState({ loading: true });
-        const images = await fetchImages(valueInput, page);
+        this.setState({ loading: true, error: false });
+        const images = await fetchImages(query, page);
         this.setState({
-          images: [...prevState.images, ...images.data.hits],
+          images:
+            page === 1
+              ? images.data.hits
+              : [...prevState.images, ...images.data.hits],
           // images: images.data.hits,
           showBtnLoadMore: true,
         });
-      } catch {
+      } catch (error) {
+        this.setState({ error: true });
       } finally {
         this.setState({ loading: false });
       }
     }
   }
+
+  handleFormSubmit = query => {
+    this.setState({
+      query,
+      images: [],
+      page: 1,
+    });
+  };
 
   onLoadMore = () => {
     this.setState(prevState => ({
@@ -54,38 +60,30 @@ export class App extends Component {
     }));
   };
 
-  // toggleModal = () => {
-  //   this.setState(({ showModal }) => ({ showModal: !showModal }));
-  // };
-  onOpenModal = (largeImageURL, alt) => {
-    this.setState({ showModal: true, dataModal: { largeImageURL, alt } });
-    // document.body.style.overflow = 'hidden';
+  onOpenModal = (largeImageURL, tags) => {
+    this.setState({ showModal: true, dataModal: { largeImageURL, tags } });
   };
 
   onCloseModal = () => {
     this.setState({ showModal: false });
   };
 
-  // handleKeyDown = e => {
-  //   if (e.code === `Escape`) {
-  //     this.onModalClose();
-  //   }
-  // };
-
   render() {
+    const { loading, error, images, showBtnLoadMore, showModal, dataModal } =
+      this.state;
     return (
       <div>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        {this.state.loading && <Loader />}
-        <ImageGallery
-          images={this.state.images}
-          onOpenModal={this.onOpenModal}
-        />
-        {this.state.images.length > 0 &&
-          this.state.showBtnLoadMore &&
-          !this.state.loading && <LoadMore onClick={this.onLoadMore} />}
-        {this.state.showModal && (
-          <Modal isClose={this.onCloseModal} dataModal={this.state.dataModal} />
+        {loading && <Loader />}
+        {error && !loading && <div>Oops... Something went wrong... </div>}
+        {images.length > 0 && (
+          <ImageGallery images={images} onOpenModal={this.onOpenModal} />
+        )}
+        {images.length > 0 && showBtnLoadMore && !loading && (
+          <LoadMore onClick={this.onLoadMore} />
+        )}
+        {showModal && (
+          <Modal isClose={this.onCloseModal} dataModal={dataModal} />
         )}
         <GlobalStyle />
         <Toaster position="top-right" />

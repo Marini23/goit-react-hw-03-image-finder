@@ -10,29 +10,29 @@ import {
 
 export class Searchbar extends Component {
   state = {
-    valueInput: ``,
+    inputValue: ``,
   };
 
   handleChangeValue = e => {
-    this.setState({ valueInput: e.currentTarget.value.toLowerCase() });
+    this.setState({ inputValue: e.currentTarget.value.toLowerCase() });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    if (this.state.valueInput.trim() === '') {
+    if (this.state.inputValue.trim() === '') {
       toast('Please enter key words for search');
       return;
     }
-    this.props.onSubmit(this.state.valueInput);
-    this.setState({ valueInput: '' });
+    this.props.onSubmit(this.state.inputValue);
+    this.setState({ inputValue: '' });
   };
 
   render() {
     return (
       <Header className="searchbar">
-        <SearchForm className="form" onSubmit={this.handleSubmit}>
-          <BtnSubmit type="submit" className="button">
-            <BtnLabel className="button-label">Search</BtnLabel>
+        <SearchForm onSubmit={this.handleSubmit}>
+          <BtnSubmit type="submit">
+            <BtnLabel>Search</BtnLabel>
           </BtnSubmit>
 
           <Input
@@ -41,7 +41,7 @@ export class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            value={this.state.valueInput}
+            value={this.state.inputValue}
             onChange={this.handleChangeValue}
           />
         </SearchForm>

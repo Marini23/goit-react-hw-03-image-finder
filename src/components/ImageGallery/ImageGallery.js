@@ -4,17 +4,16 @@ import { ImageCalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryList } from './ImageGallery.styled';
 
 export const ImageGallery = ({ images, onOpenModal }) => {
-  const { largeImageURL, alt } = images;
   return (
     <ImageGalleryList>
-      {images.map(image => (
+      {images.map(({ webformatURL, id, tags, largeImageURL }) => (
         <ImageCalleryItem
-          onClick={() => onOpenModal(largeImageURL, alt)}
-          key={image.id}
+          onClick={() => onOpenModal(largeImageURL, tags)}
+          key={id}
           onOpenModal={onOpenModal}
-          largeImageURL={image.largeImageURL}
-          img={image.webformatURL}
-          alt={image.tags}
+          largeImageURL={largeImageURL}
+          img={webformatURL}
+          alt={tags}
         />
       ))}
     </ImageGalleryList>
