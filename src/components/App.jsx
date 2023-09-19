@@ -31,10 +31,10 @@ export class App extends Component {
         this.setState({ loading: true, error: false });
         const images = await fetchImages(query, page);
         const totalPages = Math.ceil(images.data.totalHits / 12);
-        this.setState({
+        this.setState(prevState => ({
           images: [...prevState.images, ...images.data.hits],
           showBtnLoadMore: this.state.page < totalPages,
-        });
+        }));
       } catch (error) {
         this.setState({ error: true });
       } finally {
