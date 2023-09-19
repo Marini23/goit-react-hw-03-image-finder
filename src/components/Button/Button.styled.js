@@ -6,6 +6,7 @@ export const Btn = styled.button`
   background-color: #3f51b5;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
+  justify-content: center;
   display: flex;
   align-items: center;
   margin: 0 auto;

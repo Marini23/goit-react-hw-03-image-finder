@@ -17,10 +17,16 @@ export class Modal extends Component {
       this.props.isClose();
     }
   };
+  onBackdropeClick = e => {
+    if (e.target === e.currentTarget) {
+      this.props.isClose();
+    }
+  };
+
   render() {
-    const { isClose, dataModal } = this.props;
+    const { dataModal } = this.props;
     return createPortal(
-      <Overlay onClick={isClose}>
+      <Overlay onClick={this.onBackdropeClick}>
         <ModalImg>
           <img src={dataModal.largeImageURL} alt={dataModal.alt} />
         </ModalImg>
@@ -29,14 +35,3 @@ export class Modal extends Component {
     );
   }
 }
-
-// export const Modal = ({ isClose, dataModal }) => {
-//   return createPortal(
-//     <Overlay onClick={isClose}>
-//       <ModalImg>
-//         <img src={dataModal.largeImageURL} alt={dataModal.alt} />
-//       </ModalImg>
-//     </Overlay>,
-//     modalRoot
-//   );
-// };
